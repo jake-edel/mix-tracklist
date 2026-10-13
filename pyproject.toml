@@ -1,0 +1,18 @@
+[project]
+name = "mix-tracklist"
+version = "0.1.0"
+description = "Build a tracklist (.txt and .cue) for a DJ mix by querying Shazam with short clips"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "shazamio==0.8.1",
+    "aiohttp-retry",
+    "audioop-lts; python_version >= '3.13'",
+]
+
+[project.scripts]
+mix-tracklist = "mix_tracklist:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
