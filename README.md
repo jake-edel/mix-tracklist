@@ -12,8 +12,8 @@ The mix file is only read, never modified.
 ## Requirements
 
 - Python ≥ 3.11
-- [uv](https://docs.astral.sh/uv/) (recommended) or pip
-- `ffmpeg` and `ffprobe` on `PATH` 
+- [uv](https://docs.astral.sh/uv/) or pip
+- `ffmpeg` and `ffprobe`
 
 ## Install
 
