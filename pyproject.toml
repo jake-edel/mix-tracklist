@@ -3,7 +3,10 @@ name = "mix-tracklist"
 version = "0.1.0"
 description = "Build a tracklist (.txt and .cue) for a DJ mix by querying Shazam with short clips"
 readme = "README.md"
-requires-python = ">=3.11"
+# <3.14: shazamio 0.8.1 pins shazamio-core==1.1.2, which has no wheels past cp313;
+# its source build segfaults on import under 3.14. Drop the cap once shazamio
+# allows shazamio-core>=1.2 (abi3 wheels, verified working on 3.14).
+requires-python = ">=3.11,<3.14"
 dependencies = [
     "shazamio==0.8.1",
     "aiohttp-retry",

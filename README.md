@@ -11,7 +11,8 @@ The mix file is only read, never modified.
 
 ## Requirements
 
-- Python ≥ 3.11
+- Python 3.11–3.13 (uv fetches a 3.13 automatically if the system Python is newer;
+  see the comment in `pyproject.toml` for why 3.14 is excluded)
 - [uv](https://docs.astral.sh/uv/) or pip
 - `ffmpeg` and `ffprobe`
 
