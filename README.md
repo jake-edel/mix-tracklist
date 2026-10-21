@@ -1,11 +1,11 @@
 # mix-tracklist
 
-Build a tracklist for a DJ mix by querying Shazam with short clips.
+List the tracks in a DJ mix by querying Shazam with short clips.
 
 Every `--step` seconds, a `--clip`-second excerpt is cut with ffmpeg and sent
-to Shazam. Hits are grouped by track, and each track's start time is estimated
-from the clip position minus Shazam's reported offset into the track. Hits that
-disagree on the start (a shared sample or loop heard minutes apart) are dropped.
+to Shazam. Each track it recognises is listed once, in the order first heard,
+as leads for finding new music. Misses and false positives (e.g. a sample
+recognised as its source track) are left in rather than filtered out.
 
 The mix file is only read, never modified.
 
@@ -23,47 +23,48 @@ Run from the checkout (uv creates `.venv` from `uv.lock` on first run):
 uv run mix-tracklist --help
 ```
 
-Or install it as a standalone command on your `PATH`:
+Or install it as a standalone command on your `PATH` (`--editable` picks up
+edits to the script without reinstalling):
 
 ```sh
-uv tool install .
+uv tool install --editable .
 # or: pip install .
 ```
 
 ## Usage
 
 ```sh
+mix-tracklist "path/to/mix.opus"           # writes to the current directory
 mix-tracklist "path/to/mix.opus" -o out/
 ```
 
-Writes to the output directory:
+Writes:
 
 | File | Contents |
 | --- | --- |
-| `<mix>.tracklist.txt` | `H:MM:SS  Artist - Title  [label, year]  (N hits)`, plus single-hit matches as comments |
-| `<mix>.cue` | Cue sheet pointing at the mix file, one track per entry |
+| `<mix>.tracklist.txt` | Plain `H:MM:SS Artist - Title` lines, for embedding in file metadata |
+| `<mix>.tracklist.md` | Markdown list: time first heard, artist - title, label and year, number of matching clips, Shazam and YouTube Music search links |
 | `<mix>.shazam.json` | Raw per-clip hits, saved after every query |
 
 ### Options
 
 | Option | Default | Meaning |
 | --- | --- | --- |
+| `-o`, `--out` | current directory | output directory |
 | `--clip` | 12 | clip length in seconds |
 | `--step` | 30 | seconds between clips |
-| `--workers` | 1 | parallel queries |
-| `--delay` | 4 | minimum seconds between queries |
-| `--min-hits` | 2 | hits needed to list a track (fewer go in the single-hit section) |
+| `--delay` | 4 | seconds between queries |
 
 ### Rate limits and resuming
 
-Shazam returns HTTP 429 after a hundred or so quick queries. On a 429 all
-queries pause, the wait doubling each time (30s, 60s, … up to 15 min). A clip
-that still fails after 8 attempts is marked as an error.
+Shazam returns HTTP 429 after a hundred or so quick queries. On a 429 the scan
+pauses, the wait doubling each time (30s, 60s, … up to 15 min). A clip that
+still fails after 8 attempts is marked as an error.
 
 The `.shazam.json` cache is reused on re-runs: cached hits are skipped and
 failed clips are queried again, so an interrupted or partly failed scan picks
 up where it stopped. Re-running on a fully cached mix just rebuilds the
-tracklist, which makes it cheap to try a different `--min-hits`.
+tracklist.
 
 ## Development
 
