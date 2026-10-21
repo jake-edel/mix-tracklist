@@ -7,9 +7,9 @@ the clip time minus Shazam's reported offset into the track.
 Shazam rate-limits (HTTP 429) after a hundred or so quick queries. On a 429
 all queries pause, the wait doubling each time (30s, 60s, ... 15min).
 
-Read-only on the mix. Writes <out>/<mix name>.tracklist.txt, .cue and
-.shazam.json (raw hits, saved after every query and reused on re-runs, so an
-interrupted scan resumes where it stopped).
+Read-only on the mix. Writes <mix name>.tracklist.txt, .cue and .shazam.json
+(raw hits, saved after every query and reused on re-runs, so an interrupted
+scan resumes where it stopped) to --out, default the current directory.
 
     mix-tracklist "/mnt/hdd/Music/Mixes/HÖR Berlin/HÖR Berlin/02 - Tigerhead (2022-11-18).opus" -o /tmp/out
 """
@@ -210,7 +210,7 @@ def write_cue(path, mix, tracks):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("mix", type=Path)
-    ap.add_argument("-o", "--out", type=Path, required=True, help="output directory")
+    ap.add_argument("-o", "--out", type=Path, default=Path.cwd(), help="output directory (default: current directory)")
     ap.add_argument("--clip", type=int, default=12, help="clip length in seconds (default 12)")
     ap.add_argument("--step", type=int, default=30, help="seconds between clips (default 30)")
     ap.add_argument("--workers", type=int, default=1, help="parallel queries (default 1)")
